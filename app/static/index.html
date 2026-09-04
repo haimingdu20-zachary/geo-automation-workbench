@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="把客户资料、关键词、写作 Prompt、平台合规和监测计划接成一条本地 GEO 工作流。"
+    />
+    <title>GEO 自动化工作台</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="工作流导航">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true">
+            <span>G</span>
+            <i></i>
+          </div>
+          <div>
+            <p class="eyebrow">LOCAL WORKBENCH</p>
+            <h1>GEO 自动化</h1>
+          </div>
+        </div>
+
+        <nav class="pipeline" id="pipeline">
+          <button class="pipeline-step active" type="button" data-step="profile" aria-current="step">
+            <span class="step-index">01</span>
+            <span><strong>客户档案</strong><small>整理事实与证据</small></span>
+          </button>
+          <button class="pipeline-step" type="button" data-step="plan">
+            <span class="step-index">02</span>
+            <span><strong>关键词计划</strong><small>生成词包与选题</small></span>
+          </button>
+          <button class="pipeline-step" type="button" data-step="prompt">
+            <span class="step-index">03</span>
+            <span><strong>写作 Prompt</strong><small>组装成稿指令</small></span>
+          </button>
+          <button class="pipeline-step" type="button" data-step="guard">
+            <span class="step-index">04</span>
+            <span><strong>合规检查</strong><small>发现平台风险</small></span>
+          </button>
+          <button class="pipeline-step" type="button" data-step="monitoring">
+            <span class="step-index">05</span>
+            <span><strong>监测计划</strong><small>建立发布后回查</small></span>
+          </button>
+        </nav>
+
+        <div class="local-note">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <div><strong>数据留在本机</strong><small>页面不会把客户资料上传到第三方</small></div>
+        </div>
+      </aside>
+
+      <main class="main-stage">
+        <header class="topbar">
+          <div>
+            <p class="breadcrumb"><span>GEO WORKBENCH</span> / <b id="currentSection">客户档案</b></p>
+          </div>
+          <div class="top-actions">
+            <span class="server-status" id="serverStatus"><i></i> 本地服务连接中</span>
+            <button class="ghost-button" id="exportProfile" type="button">导出档案</button>
+          </div>
+        </header>
+
+        <section class="workspace">
+          <div class="step-panel active" id="panel-profile" data-panel="profile">
+            <div class="section-heading">
+              <div>
+                <span class="section-number">STEP 01</span>
+                <h2>先把可验证的家底放进来</h2>
+                <p>未知项可以留空。诊断只依据你填写的事实，不替你补造案例、资质或数据。</p>
+              </div>
+              <div class="heading-actions">
+                <input id="profileFile" type="file" accept="application/json,.json" hidden />
+                <button class="secondary-button" id="importProfile" type="button">导入 JSON</button>
+                <button class="secondary-button" id="loadSample" type="button">加载脱敏示例</button>
+              </div>
+            </div>
+
+            <div class="content-grid profile-grid">
+              <form class="form-card" id="profileForm">
+                <div class="card-kicker"><span>基础信息</span><em>必填项尽量补齐</em></div>
+                <div class="field-grid">
+                  <label class="field">
+                    <span>品牌全称</span>
+                    <input id="brandName" autocomplete="organization" placeholder="例如：某某家政服务有限公司" />
+                  </label>
+                  <label class="field">
+                    <span>品牌简称</span>
+                    <input id="brandShort" placeholder="用户平时怎么称呼你" />
+                  </label>
+                  <label class="field">
+                    <span>所属行业</span>
+                    <input id="industry" placeholder="例如：家政服务" />
+                  </label>
+                  <label class="field">
+                    <span>业务类型</span>
+                    <select id="businessType">
+                      <option value="local_b2c">本地服务型</option>
+                      <option value="national_brand">全国品牌型</option>
+                      <option value="b2b">B2B / 工厂供应链</option>
+                      <option value="hybrid">混合型</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span>核心城市</span>
+                    <input id="primaryCity" placeholder="例如：郑州" />
+                  </label>
+                  <label class="field">
+                    <span>转化目标</span>
+                    <input id="conversionGoal" placeholder="例如：私信咨询或预约到店" />
+                  </label>
+                </div>
+
+                <div class="field-grid wide-fields">
+                  <label class="field">
+                    <span>服务区域 <small>每行一项</small></span>
+                    <textarea id="serviceArea" rows="4" placeholder="郑州金水区&#10;郑州高新区"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>核心服务 <small>每行一项</small></span>
+                    <textarea id="coreServices" rows="4" placeholder="家庭保洁&#10;开荒保洁&#10;家电清洗"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>目标客户 <small>每行一项</small></span>
+                    <textarea id="targetCustomers" rows="4" placeholder="有定期保洁需求的家庭用户"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>用户会怎么问 <small>每行一项</small></span>
+                    <textarea id="customerLanguage" rows="4" placeholder="郑州家庭保洁怎么选&#10;金水区保洁哪家省心"></textarea>
+                  </label>
+                </div>
+
+                <label class="field evidence-field">
+                  <span>可验证证据 <small>每行一条；会写入 E-E-A-T 事实，不代表已自动核验</small></span>
+                  <textarea
+                    id="evidence"
+                    rows="5"
+                    placeholder="成立 9 年，可由营业执照核验&#10;累计服务客户 6000+，来源：2026 年业务台账&#10;平台好评率 4.8/5，来源：公开店铺页"
+                  ></textarea>
+                </label>
+
+                <details class="json-drawer">
+                  <summary>高级：直接编辑完整 JSON</summary>
+                  <p>适合保留模板中的渠道、竞品、内容资产、联系方式等完整字段。</p>
+                  <textarea id="profileJson" class="code-editor" rows="16" spellcheck="false"></textarea>
+                  <button class="secondary-button compact" id="applyJson" type="button">应用 JSON</button>
+                </details>
+
+                <div class="sticky-actions">
+                  <div class="draft-state"><span id="profileCompletion">0</span>% 基础项已填写</div>
+                  <button class="primary-button" id="runDiagnosis" type="submit">
+                    <span>运行客户诊断</span><b aria-hidden="true">→</b>
+                  </button>
+                </div>
+              </form>
+
+              <aside class="result-card diagnosis-card" aria-live="polite">
+                <div class="card-kicker"><span>诊断结果</span><em id="diagnosisLevel">等待运行</em></div>
+                <div class="score-orbit" id="scoreOrbit" style="--score: 0">
+                  <div><strong id="diagnosisScore">--</strong><small>/ 100</small></div>
+                </div>
+                <h3 id="diagnosisTitle">还没有诊断结果</h3>
+                <p id="diagnosisSummary">填写左侧资料后运行诊断，这里会显示资料完备度、当前优势和需要补齐的内容。</p>
+                <div class="result-columns">
+                  <div>
+                    <h4><span class="mini-dot good"></span>当前优势</h4>
+                    <ul id="strengthList"><li class="empty-line">等待诊断</li></ul>
+                  </div>
+                  <div>
+                    <h4><span class="mini-dot warn"></span>资料缺口</h4>
+                    <ul id="gapList"><li class="empty-line">等待诊断</li></ul>
+                  </div>
+                </div>
+                <button class="text-button" id="goPlan" type="button" disabled>资料已确认，进入关键词计划 →</button>
+              </aside>
+            </div>
+          </div>
+
+          <div class="step-panel" id="panel-plan" data-panel="plan">
+            <div class="section-heading">
+              <div>
+                <span class="section-number">STEP 02</span>
+                <h2>把客户语言变成可执行词包</h2>
+                <p>脚本生成的是候选池。宽泛词、纯科普词和不符合业务边界的词，仍需人工删除。</p>
+              </div>
+              <button class="primary-button" id="runPlan" type="button"><span>生成关键词计划</span><b>↗</b></button>
+            </div>
+
+            <div class="metric-strip">
+              <div><span>强商业词</span><strong id="strongCount">0</strong></div>
+              <div><span>中商业词</span><strong id="mediumCount">0</strong></div>
+              <div><span>文章角度</span><strong id="angleCount">0</strong></div>
+              <div><span>验收查询</span><strong id="queryCount">0</strong></div>
+            </div>
+
+            <div class="keyword-layout">
+              <section class="surface-card">
+                <div class="card-kicker"><span>候选关键词</span><em>点击词条可送入写作步骤</em></div>
+                <div id="keywordGroups" class="keyword-groups empty-state">
+                  <div class="empty-illustration" aria-hidden="true"><i></i><i></i><i></i></div>
+                  <h3>等待生成词包</h3>
+                  <p>先完成客户档案，再点击右上角按钮。</p>
+                </div>
+              </section>
+              <section class="surface-card">
+                <div class="card-kicker"><span>推荐选题</span><em>结构建议</em></div>
+                <div id="angleList" class="angle-list empty-state compact-empty">
+                  <p>生成后会显示标题方向、正文重点和 FAQ 种子。</p>
+                </div>
+              </section>
+            </div>
+          </div>
+
+          <div class="step-panel" id="panel-prompt" data-panel="prompt">
+            <div class="section-heading">
+              <div>
+                <span class="section-number">STEP 03</span>
+                <h2>生成一份可直接交给 AI 的写作包</h2>
+                <p>它会带上品牌事实、文章结构和发布红线，但不会直接替你发布内容。</p>
+              </div>
+            </div>
+
+            <div class="prompt-layout">
+              <form class="surface-card prompt-controls" id="promptForm">
+                <div class="card-kicker"><span>写作参数</span><em>3 项</em></div>
+                <label class="field">
+                  <span>目标关键词</span>
+                  <input id="promptKeyword" list="keywordSuggestions" placeholder="从词包选择，或手动输入" />
+                  <datalist id="keywordSuggestions"></datalist>
+                </label>
+                <label class="field">
+                  <span>文章类型</span>
+                  <select id="articleType">
+                    <option value="selection">选购指南</option>
+                    <option value="cognitive">认知科普</option>
+                    <option value="observation">行业观察</option>
+                    <option value="outcome">结果 / 案例型</option>
+                    <option value="profile">品牌 / 人物型</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>目标平台</span>
+                  <select id="promptPlatform">
+                    <option value="both">头条 + 搜狐</option>
+                    <option value="toutiao">今日头条</option>
+                    <option value="sohu">搜狐号</option>
+                  </select>
+                </label>
+                <button class="primary-button full" type="submit"><span>生成 Prompt</span><b>→</b></button>
+              </form>
+
+              <section class="surface-card prompt-output-card">
+                <div class="card-kicker">
+                  <span>Prompt 输出</span>
+                  <button class="icon-text-button" id="copyPrompt" type="button" disabled>复制全文</button>
+                </div>
+                <textarea
+                  id="promptOutput"
+                  class="code-editor prompt-output"
+                  spellcheck="false"
+                  readonly
+                  placeholder="生成后的完整写作指令会显示在这里。"
+                ></textarea>
+              </section>
+            </div>
+          </div>
+
+          <div class="step-panel" id="panel-guard" data-panel="guard">
+            <div class="section-heading">
+              <div>
+                <span class="section-number">STEP 04</span>
+                <h2>发布之前，先把风险表达揪出来</h2>
+                <p>检查标题、电话号码、绝对化表达、优化行话、关键词频次和敏感行业承诺。</p>
+              </div>
+            </div>
+
+            <form class="guard-layout" id="guardForm">
+              <section class="surface-card article-editor-card">
+                <div class="card-kicker"><span>待检查文章</span><em id="articleCount">0 字</em></div>
+                <label class="field">
+                  <span>文章标题</span>
+                  <input id="articleTitle" placeholder="例如：2026郑州家庭保洁怎么选，这5点要看清" />
+                </label>
+                <textarea
+                  id="articleBody"
+                  class="article-editor"
+                  rows="20"
+                  placeholder="把 AI 生成的正文粘贴到这里……"
+                ></textarea>
+              </section>
+
+              <section class="surface-card guard-controls">
+                <div class="card-kicker"><span>检查规则</span><em>本地执行</em></div>
+                <label class="field">
+                  <span>目标关键词</span>
+                  <input id="guardKeyword" placeholder="文章需要自然覆盖的词" />
+                </label>
+                <label class="field">
+                  <span>发布平台</span>
+                  <select id="guardPlatform">
+                    <option value="toutiao">今日头条</option>
+                    <option value="sohu">搜狐号</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>行业敏感度</span>
+                  <select id="guardIndustry">
+                    <option value="general">普通行业</option>
+                    <option value="education">教育培训</option>
+                    <option value="medical">医疗健康</option>
+                    <option value="finance">金融</option>
+                    <option value="legal">法律</option>
+                  </select>
+                </label>
+                <button class="primary-button full" type="submit"><span>运行合规检查</span><b>✓</b></button>
+
+                <div class="guard-result idle" id="guardResult" aria-live="polite">
+                  <div class="guard-status"><i></i><strong>等待检查</strong></div>
+                  <p>结果会区分错误和提醒，并给出建议标题。</p>
+                  <ul id="issueList"></ul>
+                </div>
+              </section>
+            </form>
+          </div>
+
+          <div class="step-panel" id="panel-monitoring" data-panel="monitoring">
+            <div class="section-heading">
+              <div>
+                <span class="section-number">STEP 05</span>
+                <h2>把“发完看看”变成固定回查</h2>
+                <p>沿用同一批核心查询词，记录目标品牌、竞品、引用来源和下一步动作。</p>
+              </div>
+              <button class="primary-button" id="runMonitoring" type="button"><span>生成监测计划</span><b>↻</b></button>
+            </div>
+
+            <div class="monitor-layout">
+              <section class="surface-card cadence-card">
+                <div class="card-kicker"><span>回查节奏</span><em>Cadence</em></div>
+                <div id="cadenceTimeline" class="timeline empty-state compact-empty">
+                  <p>生成后会显示建议回查时间。</p>
+                </div>
+              </section>
+              <section class="surface-card monitor-query-card">
+                <div class="card-kicker"><span>监测查询</span><em id="monitorQueryCount">0 个</em></div>
+                <div id="monitorQueries" class="monitor-queries empty-state compact-empty">
+                  <p>词包中的验收词会自动进入监测计划。</p>
+                </div>
+              </section>
+              <section class="surface-card alert-card">
+                <div class="card-kicker"><span>预警规则</span><em>Actions</em></div>
+                <ul id="alertRules" class="alert-list"><li class="empty-line">等待生成</li></ul>
+              </section>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

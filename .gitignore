@@ -1,0 +1,27 @@
+# macOS / editors
+.DS_Store
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local configuration
+.env
+.env.*
+!.env.example
+
+# Client workspaces: never publish real client material by default
+/inputs/
+/outputs/
+/monitoring/
+/workspace/
+/workspaces/
+
+# Temporary exports
+*.tmp
+*.log

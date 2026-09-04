@@ -1,0 +1,10 @@
+[project]
+name = "geo-automation-workbench"
+version = "0.1.0"
+description = "A local web workbench and Codex skill bundle for Chinese GEO content operations."
+requires-python = ">=3.9"
+dependencies = []
+
+[tool.ruff]
+line-length = 110
+target-version = "py39"
