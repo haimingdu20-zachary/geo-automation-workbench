@@ -9,7 +9,7 @@
 需要 Python 3.9 或更高版本。
 
 ```bash
-git clone https://github.com/YOUR_NAME/geo-automation-workbench.git
+git clone https://github.com/haimingdu20-zachary/geo-automation-workbench.git
 cd geo-automation-workbench
 python3 app/server.py --open
 ```
